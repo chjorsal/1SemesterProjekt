@@ -33,7 +33,8 @@ await db.query(`
         track_id   integer primary key,
         songname text,
         artist_id integer references artist,
-        genre_id integer references genre
+        genre_id integer references genre,
+        trackslength integer 
     )
 `);
 
@@ -83,7 +84,7 @@ await upload(
   db,
   "db/tracks.csv",
   `
-    copy  tracks (track_id,songname,artist_id,genre_id)
+    copy  tracks (track_id,songname,artist_id,genre_id,trackslength)
     from  stdin
     with  csv header encoding 'UTF-8'
 `,
