@@ -1,52 +1,52 @@
-track_id,songname,artist_id,genre_id
-1,Shake It Off,1,1
-2,Blank Space,1,1
-3,Hey Jude,2,2
-4,Let It Be,2,2
-5,God's Plan,3,3
-6,Hotline Bling,3,3
-7,So What,4,4
-8,Freddie Freeloader,4,4
-9,One More Time,5,5
-10,Harder Better Faster Stronger,5,5
-11,Halo,6,6
-12,Single Ladies,6,6
-13,HUMBLE,7,3
-14,Alright,7,3
-15,Creep,8,2
-16,Karma Police,8,2
-17,No Woman No Cry,9,8
-18,Three Little Birds,9,8
-19,Time,10,7
-20,Interstellar Theme,10,7
-21,Blinding Lights,11,1
-22,Starboy,11,5
-23,Do I Wanna Know,12,2
-24,R U Mine,12,2
-25,Stronger,13,3
-26,Heartless,13,3
-27,Smells Like Teen Spirit,14,2
-28,Come As You Are,14,2
-29,Hello,15,1
-30,Rolling in the Deep,15,1
-31,Anti-Hero,1,1
-32,Yesterday,2,2
-33,Take Care,3,6
-34,Blue in Green,4,4
-35,Around the World,5,5
-36,Crazy in Love,6,6
-37,DNA,7,3
-38,High and Dry,8,2
-39,Redemption Song,9,8
-40,Gladiator Theme,10,7
-41,Save Your Tears,11,1
-42,505,12,2
-43,Gold Digger,13,3
-44,Lithium,14,2
-45,Someone Like You,15,1
-46,Lover,1,1
-47,Help,2,2
-48,Started From The Bottom,3,3
-49,All Blues,4,4
-50,Digital Love,5,5
-51,What Ive Done,16,2
+track_id,songname,artist_id,genre_id,tracksLength
+1,Shake It Off,1,1,10000
+2,Blank Space,1,1,10000
+3,Hey Jude,2,2,10000
+4,Let It Be,2,2,10000
+5,God's Plan,3,3,10000
+6,Hotline Bling,3,3,10000
+7,So What,4,4,10000
+8,Freddie Freeloader,4,4,10000
+9,One More Time,5,5,10000
+10,Harder Better Faster Stronger,5,5,10000
+11,Halo,6,6,10000
+12,Single Ladies,6,6,10000
+13,HUMBLE,7,3,10000
+14,Alright,7,3,10000
+15,Creep,8,2,10000
+16,Karma Police,8,2,10000
+17,No Woman No Cry,9,8,10000
+18,Three Little Birds,9,8,10000
+19,Time,10,7,10000
+20,Interstellar Theme,10,7,10000
+21,Blinding Lights,11,1,10000
+22,Starboy,11,5,10000
+23,Do I Wanna Know,12,2,10000
+24,R U Mine,12,2,10000
+25,Stronger,13,3,10000
+26,Heartless,13,3,10000
+27,Smells Like Teen Spirit,14,2,10000
+28,Come As You Are,14,2,10000
+29,Hello,15,1,10000
+30,Rolling in the Deep,15,1,10000
+31,Anti-Hero,1,1,10000
+32,Yesterday,2,2,10000
+33,Take Care,3,6,10000
+34,Blue in Green,4,4,10000
+35,Around the World,5,5,10000
+36,Crazy in Love,6,6,10000
+37,DNA,7,3,10000
+38,High and Dry,8,2,10000
+39,Redemption Song,9,8,10000
+40,Gladiator Theme,10,7,10000
+41,Save Your Tears,11,1,10000
+42,505,12,2,10000
+43,Gold Digger,13,3,10000
+44,Lithium,14,2,10000
+45,Someone Like You,15,1,10000
+46,Lover,1,1,10000
+47,Help,2,2,10000
+48,Started From The Bottom,3,3,10000
+49,All Blues,4,4,10000
+50,Digital Love,5,5,10000
+51,What Ive Done,16,2,10000
