@@ -117,13 +117,13 @@
 
 .join-code {
   display: flex;
-  font-size: 30px;
+  font-size: 40px;
   color: white;
 }
 
 .join-code-tekst {
   display: flex;
-  font-size: 20px;
+  font-size: 30px;
   color: white;
 }
 
@@ -133,8 +133,10 @@
 }
 
 .next-track {
-  background-color: green;
+  background-color: darkgreen;
   border-radius: 8px;
+  border: 3px solid green;
+  margin-bottom: 10px;
 }
 
 .next-track span {
@@ -184,7 +186,8 @@
 }
 
 .song-row.keep-song {
-  background-color: yellow;
+  background-color: goldenrod;
+  border: 3px solid yellow;
 }
 
 .keep-vote-box {
@@ -192,20 +195,23 @@
 }
 
 .song-artist.keep-song-artist {
-  color: red;
+  color: lightyellow;
 }
 
 .song-title.keep-song-title {
-  color: goldenrod;
+  color: yellow;
+}
+
+.kick-song-row {
+  border: 3px solid red;
 }
 
 .song-row {
   display: grid;
   grid-template-columns: 1fr 100px;
-  gap: 10px;
+
   margin-bottom: 10px;
   background-color: #333333;
-  border: 1px solid #ccc;
   border-radius: 8px;
   min-height: 100px;
   align-items: center;
