@@ -9,7 +9,6 @@ server.use(express.json());
 server.use(express.static("frontend"));
 server.post("/api/votes", onPostVote);
 server.delete("/api/votes", onResetVote);
-server.listen(port, onLoadLogPort);
 server.get("/api/suggestions/:sessionId", onRandomSuggestionStart);
 server.get("/api/suggestions/:sessionId", updateRandomSuggestions);
 
