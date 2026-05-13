@@ -7,45 +7,25 @@ const port = 3000;
 const server = express();
 server.use(express.json());
 server.use(express.static("frontend"));
-server.get("/api/votes", onGetVotes);
 server.post("/api/votes", onPostVote);
-server.delete("/api/votes",onResetVote);
-server.listen(port, onLoadLogPort);
-server.get("/api/suggestions/:sessionId", onRandomSuggestion);
+server.delete("/api/votes", onResetVote);
+server.get("/api/suggestions/:sessionId", onRandomSuggestionStart);
+server.get("/api/suggestions/:sessionId", updateRandomSuggestions);
 
 server.listen(port, onLoadLogPort);
-
-async function onGetVotes(request, response) {
-  const dbResult = await db.query(`
-    SELECT 
-    tracks.track_id,
-    tracks.songname,
-    artist.artist,
-    COUNT(votes.track_id) AS votes
-    FROM tracks
-    LEFT JOIN votes ON tracks.track_id = votes.track_id -- LEFT Join sørger for at alle tracks kommer med også dem med 0 votes
-    LEFT JOIN artist ON tracks.artist_id = artist.artist_id
-    GROUP BY tracks.track_id, tracks.songname, artist.artist
-    ORDER BY votes DESC
-  `);
-  response.json(dbResult.rows);
-}
 
 async function onPostVote(request, response) {
   try {
-    // vi laver en query der tjekker om brugeren allerede har stemt i denne session
     const trackId = request.body.track_id;
     const sessionId = request.body.session_id;
     const userId = request.body.user_id;
 
     const existingVote = await db.query(
-      // denne const er lavet så vi kigger vores query igennem om en user har stemt
       `SELECT * FROM votes WHERE user_id = $1 AND session_id = $2`,
-      [userId, sessionId], // når det ikke længere er hard coded skal dette laves om
+      [userId, sessionId],
     );
 
     if (existingVote.rows.length > 0) {
-      // hvis en bruger har stemt kommer de til at få denne fejl
       return response.status(400).json({
         error: "User already voted",
       });
@@ -54,7 +34,7 @@ async function onPostVote(request, response) {
     await db.query(
       `INSERT INTO votes (session_id, user_id, track_id)
        VALUES ($1, $2, $3)`,
-      [sessionId, userId, trackId], // når det ikke længere er hard coded skal dette laves om
+      [sessionId, userId, trackId],
     );
 
     response.json({ success: true });
@@ -63,7 +43,37 @@ async function onPostVote(request, response) {
     response.status(500).json({ error: error.message });
   }
 }
-async function onRandomSuggestion(request, respones) {
+async function onRandomSuggestionStart(request, respones) {
+  const sessionId = request.params.sessionId;
+  const dbResult = await db.query(`  
+  select t.songname, a.artist, t.track_id
+  from tracks t
+  join artist a 
+    on t.artist_id = a.artist_id
+    where t.genre_id IN (1, 2, 3)
+  order by random()
+  limit 5
+  
+`);
+
+  const suggestions = dbResult.rows;
+
+  for (let i = 0; i < suggestions.length; i++) {
+    const trackId = suggestions[i].track_id;
+
+    await db.query(
+      `
+    INSERT INTO sessionTracks (session_id, track_id)
+    VALUES ($1, $2)
+    `,
+      [1, trackId], // 1 skal i denne linje skal laves om til sessionId
+    );
+  }
+
+  respones.json(dbResult.rows);
+}
+
+async function updateRandomSuggestions(request, respones) {
   const dbResult = await db.query(`
 
   select t.songname, a.artist
@@ -72,15 +82,22 @@ async function onRandomSuggestion(request, respones) {
     on t.artist_id = a.artist_id
     where t.genre_id IN (1, 2, 3)
   order by random()
-  limit 5;
+  limit 4;
 `);
   respones.json(dbResult.rows);
 }
 
-// Denne funktion sletter alle stemmer i vores database 
+async function updateFrontEnd(request, respones) {
+  const dbResult = await db.query(`
+    select * from sessionTracks
+  
+`);
+  respones.json(dbResult.rows);
+}
+
+// Denne funktion sletter alle stemmer i vores database
 // Så det er muligt at stemme igen på en sang
 async function onResetVote(request, respones) {
-
   try {
     await db.query(`DELETE FROM votes`);
     respones.json({ success: true });
