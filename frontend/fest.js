@@ -15,6 +15,10 @@ await forEachRenderTracks();
 await forEachRenderArtist();
 await forEachButtonTrackId();
 
+setInterval(function () {
+  UpdateSuggestion(sessionId, element);
+}, 3000);
+
 async function loadAndRenderSuggestions(sessionId, element) {
   try {
     const response = await fetch(`/api/suggestions/${sessionId}`);
@@ -26,6 +30,26 @@ async function loadAndRenderSuggestions(sessionId, element) {
 
     suggestions = await response.json();
     console.log(suggestions);
+  } catch (error) {
+    console.error(error);
+    element.textContent = "Something went wrong";
+  }
+}
+
+async function UpdateSuggestion(sessionId, element) {
+  try {
+    const updateResponse = await fetch(`/api/updatefrontend/${sessionId}`);
+
+    if (!updateResponse.ok) {
+      element.textContent = "Could not get suggestions, try again later";
+      return;
+    }
+
+    suggestions = await updateResponse.json();
+    console.log(suggestions);
+    await forEachRenderTracks();
+    await forEachRenderArtist();
+    await forEachButtonTrackId();
   } catch (error) {
     console.error(error);
     element.textContent = "Something went wrong";
