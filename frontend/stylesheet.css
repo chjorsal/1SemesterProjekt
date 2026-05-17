@@ -1,3 +1,52 @@
+.frontpage-page {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+  min-height: 800px;
+  min-width: 800px;
+  margin-top: 100px;
+}
+
+.buttonFrontPage {
+  display: flex;
+  margin-top: 300px;
+}
+
+.join-page {
+  display: flex;
+  justify-content: center;
+  justify-content: space-evenly;
+
+  height: 100vh;
+  min-width: 800px;
+  min-height: 800px;
+}
+
+.left-join {
+  padding: 100px;
+  outline: 1px solid saddlebrown;
+  align-self: flex-start;
+}
+
+.left-join button {
+  background-color: #000;
+  color: white;
+}
+
+.right-create {
+  padding: 100px;
+  outline: 1px solid saddlebrown;
+  align-self: flex-start;
+}
+
+.right-create button {
+  background-color: #000;
+  color: white;
+}
+
 .search {
   display: flex;
   align-items: center;
@@ -246,10 +295,4 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-
-#buttomFrontPage {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
 }

@@ -9,7 +9,7 @@ server.use(express.json());
 server.use(express.static("frontend"));
 server.get("/api/votes", onGetVotes);
 server.post("/api/votes", onPostVote);
-server.delete("/api/votes",onResetVote);
+server.delete("/api/votes", onResetVote);
 server.listen(port, onLoadLogPort);
 server.get("/api/suggestions/:sessionId", onRandomSuggestion);
 
@@ -68,19 +68,21 @@ async function onRandomSuggestion(request, respones) {
 
   select t.songname, a.artist
   from tracks t
-  join artist a 
-    on t.artist_id = a.artist_id
-    where t.genre_id IN (1, 2, 3)
-  order by random()
+  join artist a on t.artist_id = a.artist_id
+  left join votes v on t.track_id = v.track_id
+    
+  where t.genre_id IN (1, 2, 3)
+  group by t.track_id, t.songname, a.artist
+  order by COUNT(v.track_id) DESC, random()
+
   limit 5;
 `);
   respones.json(dbResult.rows);
 }
 
-// Denne funktion sletter alle stemmer i vores database 
+// Denne funktion sletter alle stemmer i vores database
 // Så det er muligt at stemme igen på en sang
 async function onResetVote(request, respones) {
-
   try {
     await db.query(`DELETE FROM votes`);
     respones.json({ success: true });
