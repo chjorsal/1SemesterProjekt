@@ -7,6 +7,7 @@ const timestamp = (await db.query("select now() as timestamp")).rows[0][
 ];
 console.log(`Recreating database on ${timestamp}...`);
 
+await db.query("drop table if exists sessionTracks");
 await db.query("drop table if exists votes");
 await db.query("drop table if exists tracks");
 await db.query("drop table if exists artist");
@@ -33,7 +34,8 @@ await db.query(`
         track_id   integer primary key,
         songname text,
         artist_id integer references artist,
-        genre_id integer references genre
+        genre_id integer references genre,
+        trackslength integer 
     )
 `);
 
@@ -41,6 +43,13 @@ await db.query(`
     create table session (
         session_id   integer primary key,
         genre_id integer references genre
+    )
+`);
+
+await db.query(`
+    create table sessionTracks (
+        session_id integer references session,
+        track_id integer references tracks
     )
 `);
 
@@ -83,9 +92,17 @@ await upload(
   db,
   "db/tracks.csv",
   `
-    copy  tracks (track_id,songname,artist_id,genre_id)
+    copy  tracks (track_id,songname,artist_id,genre_id,trackslength)
     from  stdin
     with  csv header encoding 'UTF-8'
+`,
+);
+await db.query(
+  `
+    insert into users
+    (user_id, name) values (1,'Mikkel');
+    insert into session
+    (session_id, genre_id) values (1,2);
 `,
 );
 
