@@ -7,6 +7,7 @@ const buttonTrackId = document.querySelectorAll(".vote-button");
 
 const params = new URLSearchParams(window.location.search);
 const sessionId = params.get("id");
+const userId = params.get("user");
 
 let suggestions = [];
 

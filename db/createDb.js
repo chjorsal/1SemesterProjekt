@@ -97,14 +97,6 @@ await upload(
     with  csv header encoding 'UTF-8'
 `,
 );
-await db.query(
-  `
-    insert into users
-    (user_id, name) values (1,'Mikkel');
-    insert into session
-    (session_id, genre_id) values (1,2);
-`,
-);
 
 await db.end();
 console.log("Database successfully recreated. KOM NUUUUU!!!!");
