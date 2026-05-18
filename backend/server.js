@@ -7,6 +7,9 @@ const port = 3000;
 const server = express();
 server.use(express.json());
 server.use(express.static("frontend"));
+server.post("/api/users", onPostUser);
+server.post("/api/sessions", onPostSession);
+server.get("/api/sessions/:sessionId", onGetSession);
 server.post("/api/votes", onPostVote);
 server.delete("/api/votes", onResetVote);
 server.get("/api/suggestions/:sessionId", onRandomSuggestionStart);
@@ -14,7 +17,79 @@ server.get("/api/suggestions/:sessionId", updateRandomSuggestions);
 
 server.listen(port, onLoadLogPort);
 
+async function onPostUser(request, response) {
+  // Opret bruger
+  try {
+    const name = request.body.name;
+
+    if (!name || name.trim() === "") {
+      return response.status(400).json({ error: "Navn mangler" });
+    }
+
+    const idResult = await db.query(
+      `SELECT COALESCE(MAX(user_id), 0) + 1 AS next_id FROM users`,
+    );
+    const nextId = idResult.rows[0].next_id;
+
+    await db.query(`INSERT INTO users (user_id, name) VALUES ($1, $2)`, [
+      nextId,
+      name.trim(),
+    ]);
+
+    response.json({ user_id: nextId });
+  } catch (error) {
+    console.error("User error:", error.message);
+    response.status(500).json({ error: error.message });
+  }
+}
+
+async function onPostSession(request, response) {
+  // Opret session
+  try {
+    const genreId = request.body.genre_id;
+
+    if (!genreId) {
+      return response.status(400).json({ error: "genre_id mangler" });
+    }
+
+    const idResult = await db.query(
+      `SELECT COALESCE(MAX(session_id), 0) + 1 AS next_id FROM session`,
+    );
+    const nextId = idResult.rows[0].next_id;
+
+    await db.query(
+      `INSERT INTO session (session_id, genre_id) VALUES ($1, $2)`,
+      [nextId, genreId],
+    );
+
+    response.json({ session_id: nextId });
+  } catch (error) {
+    console.error("Session error:", error.message);
+    response.status(500).json({ error: error.message });
+  }
+}
+
+async function onGetSession(request, response) {
+  // Hent session info brugres til at finde en session
+  try {
+    const sessionId = request.params.sessionId;
+    const result = await db.query(
+      `SELECT * FROM session WHERE session_id = $1`,
+      [sessionId],
+    );
+
+    if (result.rows.length === 0) {
+      return response.status(404).json({ error: "Session findes ikke" });
+    }
+
+    response.json(result.rows[0]);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+}
+
 async function onPostVote(request, response) {
+  // opretter votes
   try {
     const trackId = request.body.track_id;
     const sessionId = request.body.session_id;
@@ -66,7 +141,7 @@ async function onRandomSuggestionStart(request, respones) {
     INSERT INTO sessionTracks (session_id, track_id)
     VALUES ($1, $2)
     `,
-      [1, trackId], // 1 skal i denne linje skal laves om til sessionId
+      [sessionId, trackId], // 1 skal i denne linje skal laves om til sessionId
     );
   }
 
