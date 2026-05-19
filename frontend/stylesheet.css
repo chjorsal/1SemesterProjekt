@@ -262,7 +262,15 @@
 }
 
 .vote-box-next-track button {
-  border-radius: 3px;
+  width: 60px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #333333;
+  color: wheat;
+}
+
+.vote-box-next-track button:hover {
+  background-color: grey;
 }
 
 .next-track .song-title {
@@ -328,12 +336,16 @@
   font-size: 30px;
 }
 
-.vote-box button {
-  border-radius: 3px;
+.vote-button {
+  width: 60px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #333333;
+  color: wheat;
 }
 
 .vote-box button:hover {
-  background-color: lightgray;
+  background-color: grey;
 }
 
 .song-info {
