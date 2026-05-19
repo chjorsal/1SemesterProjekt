@@ -1,4 +1,3 @@
-console.log("votesloaded1");
 import { refreshTracks } from "./fest.js";
 window.vote = vote;
 
