@@ -27,7 +27,6 @@
   align-items: center;
   border-radius: 10px;
   background-color: #333333;
-  border: none;
   outline: 2px solid lightgreen;
   color: white;
   font-size: 30px;
@@ -73,7 +72,6 @@
 
 .left-join button {
   background-color: #333333;
-  border: none;
   outline: 2px solid lightgreen;
   color: white;
   width: 200px;
