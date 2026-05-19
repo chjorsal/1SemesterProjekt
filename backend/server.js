@@ -2,6 +2,7 @@ import express from "express";
 import { pool } from "../db/connect.js";
 
 const db = pool();
+const sessionState = {};
 
 const port = 3000;
 const server = express();
@@ -11,6 +12,7 @@ server.use(onEachRequest);
 server.post("/api/users", onPostUser);
 server.post("/api/sessions", onPostSession);
 server.get("/api/sessions/:sessionId", onGetSession);
+server.get("/api/status/:sessionId", onGetStatus);
 server.post("/api/votes", onPostVote);
 server.delete("/api/votes", onResetVote);
 server.get("/api/suggestions/:sessionId", onRandomSuggestionStart);
@@ -89,6 +91,17 @@ async function onGetSession(request, response) {
   }
 }
 
+async function onGetStatus(request, response) {
+  const sessionId = request.params.sessionId;
+  const state = sessionState[sessionId];
+
+  if (!state) {
+    return response.status(404).json({ error: "Session ikke fundet" });
+  }
+
+  response.json({ timeLeft: state.expiresAt - Date.now() });
+}
+
 async function onPostVote(request, response) {
   // opretter votes
   try {
@@ -120,8 +133,17 @@ async function onPostVote(request, response) {
   }
 }
 
+async function onRandomSuggestionStart(request, response) {
+  const sessionId = request.params.sessionId;
+  const tracks = await refreshSessionTracks(sessionId);
+  response.json(tracks);
+}
+
+/*
 async function onRandomSuggestionStart(request, respones) {
   const sessionId = request.params.sessionId;
+  const tracks = await refreshSessionTracks(sessionId);
+  response.json(tracks);
   await db.query(
     `  
   delete from sessiontracks where session_id = $1
@@ -131,7 +153,7 @@ async function onRandomSuggestionStart(request, respones) {
   );
 
   const dbResult = await db.query(`  
-  select t.songname, a.artist, t.track_id
+  select t.songname, a.artist, t.track_id, t.trackslength
   from tracks t
   join artist a 
     on t.artist_id = a.artist_id
@@ -155,19 +177,66 @@ async function onRandomSuggestionStart(request, respones) {
     );
   }
 
+  const firstTrack = dbResult.rows[0];
+
+  sessionState[sessionId] = {
+    expiresAt: Date.now() + firstTrack.trackslength,
+  };
+
   respones.json(dbResult.rows);
 }
+*/
 
-async function updateFrontEnd(request, response) {
+async function refreshSessionTracks(sessionId) {
+  if (sessionState[sessionId] && sessionState[sessionId].timer) {
+    clearTimeout(sessionState[sessionId].timer);
+  }
+
+  await db.query(`DELETE FROM votes WHERE session_id = $1`, [sessionId]);
+  await db.query(`DELETE FROM sessiontracks WHERE session_id = $1`, [
+    sessionId,
+  ]);
+
   const dbResult = await db.query(`
+    select t.songname, a.artist, t.track_id, t.trackslength
+    from tracks t
+    join artist a on t.artist_id = a.artist_id
+    where t.genre_id IN (1, 2, 3)
+    order by random()
+    limit 5
+  `);
+
+  for (let i = 0; i < dbResult.rows.length; i++) {
+    await db.query(
+      `INSERT INTO sessionTracks (session_id, track_id) VALUES ($1, $2)`,
+      [sessionId, dbResult.rows[i].track_id],
+    );
+  }
+
+  const firstTrack = dbResult.rows[0];
+  const expiresAt = Date.now() + firstTrack.trackslength;
+  const timer = setTimeout(async function () {
+    await refreshSessionTracks(sessionId);
+  }, firstTrack.trackslength);
+
+  sessionState[sessionId] = { expiresAt, timer };
+
+  return dbResult.rows;
+}
+async function updateFrontEnd(request, response) {
+  const sessionId = request.params.sessionId;
+  const dbResult = await db.query(
+    `
   select t.songname, a.artist, v.session_id, v.track_id, count (user_id)
   as votes from votes v
   right join sessiontracks st using (session_id, track_id) 
   join tracks t on t.track_id = st.track_id
   join artist a on a.artist_id = t.artist_id 
-  where session_id = 1 group by (t.songname, a.artist, v.session_id, v.track_id) 
+  where session_id = $1 group by (t.songname, a.artist, v.session_id, v.track_id) 
   order by votes DESC;
-`);
+  `,
+    [sessionId],
+  );
   response.json(dbResult.rows);
 }
 

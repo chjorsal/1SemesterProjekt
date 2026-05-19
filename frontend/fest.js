@@ -13,14 +13,38 @@ const userId = params.get("user");
 
 let suggestions = [];
 
-await loadAndRenderSuggestions(sessionId, errorElement);
+const statusResponse = await fetch(`/api/status/${sessionId}`);
+const statusData = await statusResponse.json();
+
+if (statusData.error) {
+  await loadAndRenderSuggestions(sessionId, errorElement);
+} else {
+  await UpdateSuggestion(sessionId, errorElement);
+}
+
 await forEachRenderTracks();
 await forEachRenderArtist();
 await forEachButtonTrackId();
 
-/*setInterval(function () {
-  UpdateSuggestion(sessionId, errorElement);
-}, 3000); */
+let lastTimeLeft = null;
+
+setInterval(async function () {
+  const response = await fetch(`/api/status/${sessionId}`);
+  const data = await response.json();
+
+  if (lastTimeLeft > 0 && data.timeLeft <= 1000) {
+    setTimeout(async function () {
+      await UpdateSuggestion(sessionId, errorElement);
+
+      document.querySelectorAll(".vote-button").forEach((b) => {
+        b.style.visibility = "visible";
+        b.disabled = false;
+      });
+    }, 500);
+  }
+
+  lastTimeLeft = data.timeLeft;
+}, 1000);
 
 async function loadAndRenderSuggestions(sessionId, element) {
   try {
