@@ -1,9 +1,11 @@
-const element = [];
+console.log("festloaded");
+const errorElement = document.querySelector(".now-playing-mid");
 const elements = document.querySelectorAll(".song-title");
 const Artistelements = document.querySelectorAll(".song-artist");
 const playing = document.querySelector(".now-playing-mid");
 const playingArtist = document.querySelector(".now-playing-bottom");
 const buttonTrackId = document.querySelectorAll(".vote-button");
+const votesCount = document.querySelectorAll(".vote-count");
 
 const params = new URLSearchParams(window.location.search);
 const sessionId = params.get("id");
@@ -11,14 +13,14 @@ const userId = params.get("user");
 
 let suggestions = [];
 
-await loadAndRenderSuggestions(sessionId, element);
+await loadAndRenderSuggestions(sessionId, errorElement);
 await forEachRenderTracks();
 await forEachRenderArtist();
 await forEachButtonTrackId();
 
-setInterval(function () {
-  UpdateSuggestion(sessionId, element);
-}, 3000);
+/*setInterval(function () {
+  UpdateSuggestion(sessionId, errorElement);
+}, 3000); */
 
 async function loadAndRenderSuggestions(sessionId, element) {
   try {
@@ -36,6 +38,9 @@ async function loadAndRenderSuggestions(sessionId, element) {
     element.textContent = "Something went wrong";
   }
 }
+export async function refreshTracks(sessionId) {
+  UpdateSuggestion(sessionId, errorElement);
+}
 
 async function UpdateSuggestion(sessionId, element) {
   try {
@@ -51,6 +56,7 @@ async function UpdateSuggestion(sessionId, element) {
     await forEachRenderTracks();
     await forEachRenderArtist();
     await forEachButtonTrackId();
+    await forEachRenderVotes();
   } catch (error) {
     console.error(error);
     element.textContent = "Something went wrong";
@@ -72,5 +78,11 @@ async function forEachRenderArtist() {
 async function forEachButtonTrackId() {
   buttonTrackId.forEach((currentElement, index) => {
     currentElement.setAttribute("data-track-id", suggestions[index].track_id);
+  });
+}
+
+async function forEachRenderVotes() {
+  votesCount.forEach((currentElement, index) => {
+    currentElement.textContent = suggestions[index].votes;
   });
 }

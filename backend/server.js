@@ -7,13 +7,13 @@ const port = 3000;
 const server = express();
 server.use(express.json());
 server.use(express.static("frontend"));
+server.use(onEachRequest);
 server.post("/api/users", onPostUser);
 server.post("/api/sessions", onPostSession);
 server.get("/api/sessions/:sessionId", onGetSession);
 server.post("/api/votes", onPostVote);
 server.delete("/api/votes", onResetVote);
 server.get("/api/suggestions/:sessionId", onRandomSuggestionStart);
-server.get("/api/suggestions/:sessionId", updateRandomSuggestions);
 server.get("/api/updatefrontend/:sessionId", updateFrontEnd);
 
 server.listen(port, onLoadLogPort);
@@ -114,7 +114,6 @@ async function onPostVote(request, response) {
     );
 
     response.json({ success: true });
-    updateFrontEnd();
   } catch (error) {
     console.error("Vote error:", error.message);
     response.status(500).json({ error: error.message });
@@ -123,6 +122,14 @@ async function onPostVote(request, response) {
 
 async function onRandomSuggestionStart(request, respones) {
   const sessionId = request.params.sessionId;
+  await db.query(
+    `  
+  delete from sessiontracks where session_id = $1
+  
+`,
+    [sessionId],
+  );
+
   const dbResult = await db.query(`  
   select t.songname, a.artist, t.track_id
   from tracks t
@@ -151,20 +158,6 @@ async function onRandomSuggestionStart(request, respones) {
   respones.json(dbResult.rows);
 }
 
-async function updateRandomSuggestions(request, respones) {
-  const dbResult = await db.query(`
-
-  select t.songname, a.artist
-  from tracks t
-  join artist a 
-    on t.artist_id = a.artist_id
-    where t.genre_id IN (1, 2, 3)
-  order by random()
-  limit 4;
-`);
-  respones.json(dbResult.rows);
-}
-
 async function updateFrontEnd(request, response) {
   const dbResult = await db.query(`
   select t.songname, a.artist, v.session_id, v.track_id, count (user_id)
@@ -188,6 +181,11 @@ async function onResetVote(request, respones) {
     console.error("Reset error:", error.message);
     respones.status(500).json({ error: error.message });
   }
+}
+
+function onEachRequest(request, response, next) {
+  console.log(new Date(), request.method, request.url);
+  next();
 }
 
 function onLoadLogPort() {
