@@ -11,16 +11,28 @@
   background-color: #000;
 }
 
+.header-social-button {
+  color: white;
+  font-size: 40px;
+  padding-top: 200px;
+  padding-bottom: 50px;
+}
+
 .buttonFrontPage {
   display: flex;
-  margin-top: 300px;
-  width: 200px;
-  height: 100px;
+
+  width: 300px;
+  height: 150px;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
   background-color: green;
   color: white;
+  font-size: 30px;
+}
+
+.buttonFrontPage:hover {
+  background-color: lightgreen;
 }
 
 .join-page {
@@ -66,7 +78,7 @@
 }
 
 .left-join button:hover {
-  background-color: #333333;
+  background-color: lightgreen;
 }
 
 .right-create {
@@ -83,7 +95,7 @@
 }
 
 .right-create button:hover {
-  background-color: #333333;
+  background-color: lightgreen;
 }
 
 .search {
