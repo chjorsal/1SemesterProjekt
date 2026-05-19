@@ -44,16 +44,18 @@ async function vote(btn) {
 
   if (!response.ok) {
     console.error("Server error:", response.status, await response.text());
-    btn.disabled = true;
+    btn.hidden = true;
     btn.textContent = "Har stemt";
     return;
   }
 
+  
   refreshTracks(sessionId);
-  const countEl = btn.nextElementSibling;
-  //countEl.textContent = parseInt(countEl.textContent) + 1;
-  btn.disabled = true;
-  btn.textContent = "Har stemt";
+  
+
+  document.querySelectorAll(".vote-button").forEach((b) => {
+    b.style.visibility = "hidden";
+  });
 }
 
 //loadVotes();
