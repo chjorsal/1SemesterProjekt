@@ -8,23 +8,31 @@
   </head>
   <body>
     <div class="join2-page">
-      <div id="stepName">
-        <input type="text" id="nameInput" placeholder="Skriv dit navn..." />
-        <button id="createUserBtn" class="btn">Opret bruger</button>
-        <p id="nameError"></p>
+      <div class="join2-container">
+        <div class="join2-header">Vælg dit brugernavn</div>
+        <div id="stepName">
+          <input type="text" id="nameInput" placeholder="Skriv dit navn..." />
+          <button id="createUserBtn" class="btn">Opret bruger</button>
+          <p id="nameError"></p>
+        </div>
+
+        <div class="join2-header">Join en session</div>
+
+        <div id="joinSession">
+          <input
+            type="number"
+            id="sessionInput"
+            placeholder="Indtast session ID..."
+          />
+          <a href="mood.html">
+            <button id="confirmJoinBtn" class="btn">Join session</button>
+          </a>
+        </div>
+
+        <p id="sessionError"></p>
+
+        <script src="votes.js"></script>
       </div>
-
-    <div id="joinSession">
-      <input
-        type="number"
-        id="sessionInput"
-        placeholder="Indtast session ID..."
-      />
-      <button id="confirmJoinBtn" class="btn">Join session</button>
     </div>
-
-      <p id="sessionError"></p>
-
-    <script src="join.js"></script>
   </body>
 </html>
