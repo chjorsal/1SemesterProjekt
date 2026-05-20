@@ -5,10 +5,7 @@ const nameError = document.getElementById("nameError");
 const newSessionBtn = document.getElementById("newSessionBtn");
 const sessionInput = document.getElementById("sessionInput");
 
-
-const params = new URLSearchParams(window.location.search);
-let userId = params.get("user") || sessionStorage.getItem("user_id") || null;
-let sessionId = params.get("id") || null;
+let userId = sessionStorage.getItem("user_id") || null;
 
 createUserBtn.addEventListener("click", onCreateUser);
 nameInput.addEventListener("keydown", (e) => {
@@ -49,40 +46,10 @@ async function onCreateUser() {
   }
 }
 
-newSessionBtn.addEventListener("click", async function () {
-  try {
-    if (!userId) {
-      sessionError.textContent = "Opret en bruger først.";
-      return;
-    }
-
-    if (sessionId) {
-      sessionError.textContent = "Du er allerede i en session.";
-      return;
-    }
-
-    newSessionBtn.disabled = true;
-    sessionError.textContent = "";
-
-    const response = await fetch("/api/sessions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ genre_id: 2 }),
-    });
-
-    if (!response.ok) throw new Error("Kunne ikke oprette session");
-
-    const data = await response.json();
-    sessionId = data.session_id;
-    window.location.href = `fest.html?id=${sessionId}&user=${userId}`;
-  } catch (error) {
-    sessionError.textContent = error.message;
-    newSessionBtn.disabled = false;
+newSessionBtn.addEventListener("click", function () {
+  if (!userId) {
+    sessionError.textContent = "Opret en bruger først.";
+    return;
   }
+  window.location.href = "mood.html";
 });
-
-confirmJoinBtn.addEventListener("click", onJoinSession);
-sessionInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") onJoinSession();
-});
-

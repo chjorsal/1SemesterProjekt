@@ -18,6 +18,10 @@
 
       <div class="mood-container">
         <!-- Dette er en knap som får dig tilbage til fest siden -->
+        <button class="btn" onclick="createSession(1)">Fest</button>
+
+        <!-- Dette er en knap som får dig tilbage til glad siden -->
+        <button class="btn" onclick="createSession(2)">Glad</button>
         <a href="fest.html">
           <button id="buttomFest" class="btn">Fest</button>
         </a>
@@ -59,26 +63,26 @@
       </div>
     </div>
 
-    <div id="stepName">
-      <input type="text" id="nameInput" placeholder="Skriv dit navn..." />
-      <button id="createUserBtn" class="btn">Opret bruger</button>
-      <p id="nameError"></p>
-    </div>
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(3)">Motivation</button>
 
-    <div id="newSession">
-      <button id="newSessionBtn" class="btn">Lav ny session</button>
-    </div>
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(4)">Afslappende</button>
 
-    <div id="joinSession">
-      <input
-        type="number"
-        id="sessionInput"
-        placeholder="Indtast session ID..."
-      />
-      <button id="confirmJoinBtn" class="btn">Join session</button>
-    </div>
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(5)">Energisk</button>
 
-    <p id="sessionError"></p>
-    <script src="create.js" type="module"></script>
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(6)">Romantisk</button>
+
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(7)">Nostalgisk</button>
+
+        <!-- Dette er en knap som får dig tilbage til motivation siden -->
+        <button class="btn" onclick="createSession(8)">Melankolsk</button>
+      </div>
+    </div>
+    <script src="mood.js"></script>
+    S
   </body>
 </html>

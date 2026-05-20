@@ -1,13 +1,11 @@
 const nameInput = document.getElementById("nameInput");
 const createUserBtn = document.getElementById("createUserBtn");
 const nameError = document.getElementById("nameError");
-
+const sessionInput = document.getElementById("sessionInput");
 const confirmJoinBtn = document.getElementById("confirmJoinBtn");
 const sessionError = document.getElementById("sessionError");
 
-const params = new URLSearchParams(window.location.search);
-let userId = params.get("user") || sessionStorage.getItem("user_id") || null;
-let sessionId = params.get("id") || null;
+let userId = sessionStorage.getItem("user_id") || null;
 
 createUserBtn.addEventListener("click", onCreateUser);
 nameInput.addEventListener("keydown", (e) => {
@@ -60,11 +58,6 @@ async function onJoinSession() {
       return;
     }
 
-    if (sessionId) {
-      sessionError.textContent = "Du er allerede i en session.";
-      return;
-    }
-
     const inputId = sessionInput.value.trim();
     if (!inputId) {
       sessionError.textContent = "Indtast et session ID.";
@@ -77,10 +70,7 @@ async function onJoinSession() {
     const response = await fetch(`/api/sessions/${inputId}`);
     if (!response.ok) throw new Error("Session findes ikke");
 
-    sessionId = inputId;
-    window.location.href = `fest.html?id=${sessionId}&user=${userId}`;
-
-    sessionError.textContent = `Du har joined session ${sessionId}!`;
+    window.location.href = `fest.html?id=${inputId}&user=${userId}`;
   } catch (error) {
     sessionError.textContent = error.message;
     confirmJoinBtn.disabled = false;
