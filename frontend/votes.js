@@ -6,23 +6,6 @@ const params = new URLSearchParams(window.location.search);
 let userId = params.get("user") || sessionStorage.getItem("user_id") || null;
 let sessionId = params.get("id") || null;
 
-/*async function loadVotes() {
-  const response = await fetch("/api/votes");
-  const votes = await response.json();
-
-  votes.forEach(function (song) {
-    const btn = document.querySelectorAll(
-      'button[data-track-id="' + song.trackId + '"]',
-    );
-
-    if (btn) {
-      const countEl = btn.nextElementSibling;
-      countEl.textContent = song.votes;
-    }
-  });
-}
-*/
-
 async function vote(btn) {
   if (btn.disabled) {
     return;
@@ -49,9 +32,7 @@ async function vote(btn) {
     return;
   }
 
-  
   refreshTracks(sessionId);
-  
 
   document.querySelectorAll(".vote-button").forEach((b) => {
     b.style.visibility = "hidden";
