@@ -31,7 +31,9 @@ async function vote(btn) {
     return;
   }
 
+  
   refreshTracks(sessionId);
+  
 
   document.querySelectorAll(".vote-button").forEach((b) => {
     b.style.visibility = "hidden";
