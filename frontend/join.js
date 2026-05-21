@@ -15,13 +15,13 @@ nameInput.addEventListener("keydown", (e) => {
 async function onCreateUser() {
   try {
     if (userId) {
-      nameError.textContent = "Du er allerede oprettet som bruger.";
+      nameError.textContent = "You are already a registered user.";
       return;
     }
 
     const name = nameInput.value.trim();
     if (!name) {
-      nameError.textContent = "Skriv venligst dit navn.";
+      nameError.textContent = "Please type your name.";
       return;
     }
 
@@ -34,12 +34,12 @@ async function onCreateUser() {
       body: JSON.stringify({ name }),
     });
 
-    if (!response.ok) throw new Error("Kunne ikke oprette bruger");
+    if (!response.ok) throw new Error("Could not create user");
 
     const data = await response.json();
     userId = data.user_id;
     sessionStorage.setItem("user_id", data.user_id);
-    nameError.textContent = `Velkommen ${name}!`;
+    nameError.textContent = `Welcome ${name}!`;
   } catch (error) {
     nameError.textContent = error.message;
     createUserBtn.disabled = false;
@@ -54,13 +54,13 @@ sessionInput.addEventListener("keydown", (e) => {
 async function onJoinSession() {
   try {
     if (!userId) {
-      sessionError.textContent = "Opret en bruger først.";
+      sessionError.textContent = "Create a user first.";
       return;
     }
 
     const inputId = sessionInput.value.trim();
     if (!inputId) {
-      sessionError.textContent = "Indtast et session ID.";
+      sessionError.textContent = "Enter session ID.";
       return;
     }
 
@@ -68,7 +68,7 @@ async function onJoinSession() {
     sessionError.textContent = "";
 
     const response = await fetch(`/api/sessions/${inputId}`);
-    if (!response.ok) throw new Error("Session findes ikke");
+    if (!response.ok) throw new Error("Session could not be found");
 
     window.location.href = `fest.html?id=${inputId}&user=${userId}`;
   } catch (error) {

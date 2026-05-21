@@ -3,23 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Create Session</title>
     <link rel="stylesheet" href="stylesheet.css" />
   </head>
   <body>
-    <div id="stepName">
-      <input type="text" id="nameInput" placeholder="Skriv dit navn..." />
-      <button id="createUserBtn" class="btn">Opret bruger</button>
-      <p id="nameError"></p>
-    </div>
+    <div class="join-page">
+      <div class="join-header">Create session</div>
+      <br />
+      <div class="join-info">Create a new user and start a session</div>
 
-    <div id="newSession">
-      <a href="mood.html">
-        <button id="newSessionBtn" class="btn">Lav ny session</button>
-      </a>
-    </div>
+      <div class="join-create-container">
+        <div class="left-join">
+          <div class="createinfo">Create user</div>
 
-    <p id="sessionError"></p>
+          <input type="text" id="nameInput" placeholder="Enter your name..." />
+          <button id="createUserBtn" class="btn">Opret bruger</button>
+          <p id="nameError"></p>
+        </div>
+
+        <div class="right-create">
+          <div class="right-join">
+            <img class="right-photo" src="Icon.png" alt="New session" />
+            <div class="create-right-card-info">Start new session</div>
+
+            <a href="mood.html">
+              <button id="newSessionBtn" class="btn">Make a new session</button>
+            </a>
+            <p id="sessionError"></p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="create.js"></script>
   </body>
