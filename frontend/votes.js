@@ -5,10 +5,9 @@ const params = new URLSearchParams(window.location.search);
 let userId = params.get("user") || sessionStorage.getItem("user_id") || null;
 let sessionId = params.get("id") || null;
 
-async function vote(btn) {
-  if (btn.disabled) {
-    return;
-  }
+export async function vote(btn) {
+  if (btn.disabled) return;
+  if (btn.style.opacity === "0") return;
 
   const trackId = btn.dataset.trackId;
 
@@ -26,18 +25,17 @@ async function vote(btn) {
 
   if (!response.ok) {
     console.error("Server error:", response.status, await response.text());
-    btn.hidden = true;
-    btn.textContent = "Har stemt";
+    btn.style.opacity = "0";
+    btn.disabled = true;
     return;
   }
 
-  
-  refreshTracks(sessionId);
-  
-
   document.querySelectorAll(".vote-button").forEach((b) => {
-    b.style.visibility = "hidden";
+    b.style.opacity = "0";
+    b.disabled = true;
   });
+
+  refreshTracks(sessionId);
 }
 
 //loadVotes();
