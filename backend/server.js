@@ -223,6 +223,26 @@ async function refreshSessionTracks(sessionId) {
 
   return dbResult.rows;
 }
+
+async function updateFrontEnd(request, response) {
+  const sessionId = request.params.sessionId;
+  const dbResult = await db.query(
+    `
+    select t.songname, a.artist, st.session_id, st.track_id, count(v.user_id)
+    as votes from sessiontracks st
+    left join votes v using (session_id, track_id)
+    join tracks t on t.track_id = st.track_id
+    join artist a on a.artist_id = t.artist_id
+    where st.session_id = $1
+    group by (t.songname, a.artist, st.session_id, st.track_id)
+    order by votes DESC
+  `,
+    [sessionId],
+  );
+  response.json(dbResult.rows);
+}
+
+/*
 async function updateFrontEnd(request, response) {
   const sessionId = request.params.sessionId;
   const dbResult = await db.query(
@@ -239,6 +259,7 @@ async function updateFrontEnd(request, response) {
   );
   response.json(dbResult.rows);
 }
+  */
 
 // Denne funktion sletter alle stemmer i vores database
 // Så det er muligt at stemme igen på en sang
