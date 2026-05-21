@@ -1,3 +1,5 @@
+import { vote } from "./votes.js";
+
 console.log("festloaded");
 const errorElement = document.querySelector(".now-playing-mid");
 const elements = document.querySelectorAll(".song-title");
@@ -24,22 +26,25 @@ if (statusData.error) {
 
 await forEachRenderTracks();
 await forEachRenderArtist();
-await forEachButtonTrackId();
 
 let lastTimeLeft = null;
+let isChanging = false;
 
 setInterval(async function () {
   const response = await fetch(`/api/status/${sessionId}`);
   const data = await response.json();
 
-  if (lastTimeLeft > 0 && data.timeLeft <= 1000) {
+  if (lastTimeLeft > 0 && data.timeLeft <= 0 && !isChanging) {
+    isChanging = true;
     setTimeout(async function () {
       await UpdateSuggestion(sessionId, errorElement);
+      await forEachRenderVotes();
 
       document.querySelectorAll(".vote-button").forEach((b) => {
-        b.style.visibility = "visible";
+        b.style.opacity = "1";
         b.disabled = false;
       });
+      isChanging = false;
     }, 500);
   }
 
@@ -63,7 +68,7 @@ async function loadAndRenderSuggestions(sessionId, element) {
   }
 }
 export async function refreshTracks(sessionId) {
-  UpdateSuggestion(sessionId, errorElement);
+  await UpdateSuggestion(sessionId, errorElement);
 }
 
 async function UpdateSuggestion(sessionId, element) {
@@ -89,24 +94,36 @@ async function UpdateSuggestion(sessionId, element) {
 
 async function forEachRenderTracks() {
   elements.forEach((currentElement, index) => {
-    currentElement.textContent = suggestions[index].songname;
+    if (suggestions[index]) {
+      currentElement.textContent = suggestions[index].songname;
+    }
   });
 }
 
 async function forEachRenderArtist() {
   Artistelements.forEach((currentElement, index) => {
-    currentElement.textContent = suggestions[index].artist;
+    if (suggestions[index]) {
+      currentElement.textContent = suggestions[index].artist;
+    }
   });
 }
 
 async function forEachButtonTrackId() {
-  buttonTrackId.forEach((currentElement, index) => {
-    currentElement.setAttribute("data-track-id", suggestions[index].track_id);
+  const buttons = document.querySelectorAll(".vote-button");
+  buttons.forEach((currentElement, index) => {
+    if (suggestions[index]) {
+      currentElement.setAttribute("data-track-id", suggestions[index].track_id);
+      currentElement.onclick = function () {
+        vote(this);
+      };
+    }
   });
 }
 
 async function forEachRenderVotes() {
   votesCount.forEach((currentElement, index) => {
-    currentElement.textContent = suggestions[index].votes;
+    if (suggestions[index]) {
+      currentElement.textContent = suggestions[index].votes;
+    }
   });
 }

@@ -92,14 +92,28 @@ async function onGetSession(request, response) {
 }
 
 async function onGetStatus(request, response) {
-  const sessionId = request.params.sessionId;
-  const state = sessionState[sessionId];
+  try {
+    const sessionId = request.params.sessionId;
+    let state = sessionState[sessionId];
 
-  if (!state) {
-    return response.status(404).json({ error: "Session ikke fundet" });
+    if (!state) {
+      const result = await db.query(
+        `SELECT * FROM session WHERE session_id = $1`,
+        [sessionId],
+      );
+
+      if (result.rows.length === 0) {
+        return response.status(404).json({ error: "Session ikke fundet" });
+      }
+
+      await refreshSessionTracks(sessionId);
+      state = sessionState[sessionId];
+    }
+
+    response.json({ timeLeft: state.expiresAt - Date.now() });
+  } catch (error) {
+    response.status(500).json({ error: error.message });
   }
-
-  response.json({ timeLeft: state.expiresAt - Date.now() });
 }
 
 async function onPostVote(request, response) {
