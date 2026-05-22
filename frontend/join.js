@@ -35,7 +35,7 @@ async function onCreateUser() {
     });
 
     if (!response.ok) throw new Error("Could not create user");
-
+    
     const data = await response.json();
     userId = data.user_id;
     sessionStorage.setItem("user_id", data.user_id);
