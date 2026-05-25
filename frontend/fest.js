@@ -46,7 +46,7 @@ setInterval(async function () {
   }
 
   lastTimeLeft = data.timeLeft;
-}, 1000);
+}, 3000);
 
 async function loadAndRenderSuggestions(sessionId, element) {
   try {
