@@ -34,22 +34,19 @@ setInterval(async function () {
   const response = await fetch(`/api/status/${sessionId}`);
   const data = await response.json();
 
-  if (lastTimeLeft > 0 && data.timeLeft <= 0 && !isChanging) {
-    isChanging = true;
+  if (lastTimeLeft !== null && lastTimeLeft < 1000 && data.timeLeft > 5000) {
     setTimeout(async function () {
       await UpdateSuggestion(sessionId, errorElement);
-      await forEachRenderVotes();
 
       document.querySelectorAll(".vote-button").forEach((b) => {
         b.style.opacity = "1";
         b.disabled = false;
       });
-      isChanging = false;
     }, 500);
   }
 
   lastTimeLeft = data.timeLeft;
-}, 5000);
+}, 1000);
 
 async function loadAndRenderSuggestions(sessionId, element) {
   try {
