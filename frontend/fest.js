@@ -28,7 +28,7 @@ await forEachRenderTracks();
 await forEachRenderArtist();
 
 let lastTimeLeft = null;
-let isChanging = false; // Flag to prevent multiple simultaneous updates
+let isChanging = false;
 
 setInterval(async function () {
   const response = await fetch(`/api/status/${sessionId}`);
