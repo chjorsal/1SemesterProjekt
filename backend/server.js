@@ -97,12 +97,6 @@ async function onGetStatus(request, response) {
     let state = sessionState[sessionId];
 
     if (!state) {
-      console.log(
-        "state mangler for session",
-        sessionId,
-        new Date().toISOString(),
-      );
-
       sessionState[sessionId] = { expiresAt: Date.now() + 10000, timer: null };
 
       const result = await db.query(
@@ -119,11 +113,6 @@ async function onGetStatus(request, response) {
     }
 
     response.json({ timeLeft: state.expiresAt - Date.now() });
-    console.log(
-      "timeLeft for session",
-      sessionId,
-      state.expiresAt - Date.now(),
-    );
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
