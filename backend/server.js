@@ -97,6 +97,8 @@ async function onGetStatus(request, response) {
     let state = sessionState[sessionId];
 
     if (!state) {
+      sessionState[sessionId] = { expiresAt: Date.now() + 10000, timer: null };
+
       const result = await db.query(
         `SELECT * FROM session WHERE session_id = $1`,
         [sessionId],
