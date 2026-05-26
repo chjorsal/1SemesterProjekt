@@ -155,53 +155,6 @@ async function onRandomSuggestionStart(request, response) {
   response.json(tracks);
 }
 
-/*
-async function onRandomSuggestionStart(request, respones) {
-  const sessionId = request.params.sessionId;
-  const tracks = await refreshSessionTracks(sessionId);
-  response.json(tracks);
-  await db.query(
-    `  
-  delete from sessiontracks where session_id = $1
-  
-`,
-    [sessionId],
-  );
-
-  const dbResult = await db.query(`  
-  select t.songname, a.artist, t.track_id, t.trackslength
-  from tracks t
-  join artist a 
-    on t.artist_id = a.artist_id
-    where t.genre_id IN (1, 2, 3)
-  order by random()
-  limit 5
-  
-`);
-
-  const suggestions = dbResult.rows;
-
-  for (let i = 0; i < suggestions.length; i++) {
-    const trackId = suggestions[i].track_id;
-
-    await db.query(
-      `
-    INSERT INTO sessionTracks (session_id, track_id)
-    VALUES ($1, $2)
-    `,
-      [sessionId, trackId], // 1 skal i denne linje skal laves om til sessionId
-    );
-  }
-
-  const firstTrack = dbResult.rows[0];
-
-  sessionState[sessionId] = {
-    expiresAt: Date.now() + firstTrack.trackslength,
-  };
-
-  respones.json(dbResult.rows);
-}
-*/
 
 async function refreshSessionTracks(sessionId) {
   if (sessionState[sessionId] && sessionState[sessionId].timer) {
@@ -258,27 +211,6 @@ async function updateFrontEnd(request, response) {
   response.json(dbResult.rows);
 }
 
-/*
-async function updateFrontEnd(request, response) {
-  const sessionId = request.params.sessionId;
-  const dbResult = await db.query(
-    `
-  select t.songname, a.artist, v.session_id, v.track_id, count (user_id)
-  as votes from votes v
-  right join sessiontracks st using (session_id, track_id) 
-  join tracks t on t.track_id = st.track_id
-  join artist a on a.artist_id = t.artist_id 
-  where session_id = $1 group by (t.songname, a.artist, v.session_id, v.track_id) 
-  order by votes DESC;
-  `,
-    [sessionId],
-  );
-  response.json(dbResult.rows);
-}
-  */
-
-// Denne funktion sletter alle stemmer i vores database
-// Så det er muligt at stemme igen på en sang
 async function onResetVote(request, respones) {
   try {
     await db.query(`DELETE FROM votes`);
